@@ -135,7 +135,12 @@ func (g *Graphite) postOne(name, value string) error {
 
 // reconnect attempts to (re-)establish a TCP connection to the Graphite server.
 func (g *Graphite) reconnect() error {
-	conn, err := net.Dial("tcp", g.endpoint)
+	raddr, err := net.ResolveTCPAddr("tcp", endpoint)
+	if err != nil {
+		return err
+	}
+
+	conn, err := net.DialTCP("tcp", nil, raddr)
 	if err != nil {
 		return err
 	}
